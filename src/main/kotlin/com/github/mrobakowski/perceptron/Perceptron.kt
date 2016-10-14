@@ -4,15 +4,21 @@ import golem.*
 import golem.matrix.Matrix
 
 class Perceptron(
-        numInputs: Int,
-        val activationFunction: (Matrix<Double>) -> Matrix<Double> = { it.mapMat { (it >= 0.0).toDouble() } }
+        numInputs: Int
 ) {
+    fun activationFunctionUnipolar(it: Matrix<Double>) = it.mapMat { (it >= 0).toDouble() }
+    fun activationFunctionBipolar(it: Matrix<Double>) = it.mapMat { if (it >= 0) 1.0 else -1.0 }
+
     var weights = randn(numInputs + 1)
 
-    fun response(x: Matrix<Double>) = activationFunction(net(x))
+    fun response(x: Matrix<Double>, bipolar: Boolean = false) = if (!bipolar)
+        activationFunctionUnipolar(net(x))
+    else
+        activationFunctionBipolar(x)
+
     fun net(x: Matrix<Double>) = weights * x.extendWithColumns(mat[1]).T
     fun learn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5) {
-        for (epoch in 0..maxEpochs) {
+        for (epoch in 1..maxEpochs) {
             val shuffled = examples.shuffle()
             var totalError = 0.0
 
@@ -30,17 +36,18 @@ class Perceptron(
     }
 
     fun adalineLearn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5, eps: Double = 0.001) {
-        for (epoch in 0..maxEpochs) {
+        for (epoch in 1..maxEpochs) {
             val shuffled = examples.shuffle()
             var totalError = 0.0
 
-            for ((inputs, desiredOutput, desiredNet) in shuffled) {
-                desiredNet!!
+            for ((inputs, unipolarOut, bipolarOut) in shuffled) {
                 val output = net(inputs)
-                val error = desiredNet - output
+                val error = bipolarOut - output
                 totalError += (error emul error).sum()
                 weights += trainRate * error * inputs.extendWithColumns(mat[1])
             }
+
+            totalError /= shuffled.size
 
             println("Epoch #$epoch err=$totalError (adaline)")
 
@@ -49,7 +56,7 @@ class Perceptron(
     }
 }
 
-data class DataPoint(val input: Matrix<Double>, val output: Matrix<Double>, var desiredNet: Matrix<Double>? = null) {
+data class DataPoint(val input: Matrix<Double>, val unipolarOut: Matrix<Double>, var bipolarOut: Matrix<Double>) {
     constructor(combined: Matrix<Double>) : this(
             combined[
                     0..(combined.numRows() - 1),

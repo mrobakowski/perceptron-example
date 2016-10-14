@@ -20,7 +20,7 @@ fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam
 
         val res = if (lParam1 * x + lParam2 * y + lParam3 > 0) 1.0 else 0.0
 
-        DataPoint(mat[x, y, res, lParam1 * x + lParam2 * y + lParam3])
+        DataPoint(mat[x, y, res, res * 2 - 1])
     }
 
     draw(res, perceptron, displayPerceptron)
@@ -29,7 +29,7 @@ fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam
 }
 
 fun draw(dps: List<DataPoint>, perceptron: Perceptron, displayPerceptron: Boolean) {
-    val pts = dps.groupBy { it.output[0] }
+    val pts = dps.groupBy { it.unipolarOut[0] }
 
     val (xsAbove, ysAbove) = pts[0.0]?.map { it.input[0] to it.input[1] }?.unzip() ?: listOf<Double>() to listOf()
     val (xsBelow, ysBelow) = pts[1.0]?.map { it.input[0] to it.input[1] }?.unzip() ?: listOf<Double>() to listOf()

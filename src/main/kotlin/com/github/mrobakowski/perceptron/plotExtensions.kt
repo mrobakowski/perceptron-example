@@ -25,7 +25,10 @@ fun scatter(vararg series: String) {
 
 fun remSeries(vararg name: String) {
     figures[figNum]?.first?.apply {
-        name.forEach { removeSeries(it) }
+        name.forEach {
+            if (seriesMap.containsKey(it))
+                removeSeries(it)
+        }
     }
 }
 

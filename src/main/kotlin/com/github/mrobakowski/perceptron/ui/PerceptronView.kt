@@ -100,8 +100,8 @@ class PerceptronView : View() {
 
                         dataPointColumn("x", ObservableDataPoint2D::x)
                         dataPointColumn("y", ObservableDataPoint2D::y)
-                        dataPointColumn("out", ObservableDataPoint2D::out)
-                        dataPointColumn("net", ObservableDataPoint2D::net)
+                        dataPointColumn("unipolar", ObservableDataPoint2D::unipolar)
+                        dataPointColumn("bipolar", ObservableDataPoint2D::bipolar)
                     }
                 }
             }
@@ -181,20 +181,20 @@ class ObservableDataPoint2D(val dp: DataPoint) {
         yProp.onChange { if (it != null) dp.input[1] = it.toDouble() }
     }
 
-    val outProp = SimpleDoubleProperty()
-    var out by outProp
+    val unipolarProp = SimpleDoubleProperty()
+    var unipolar by unipolarProp
 
     init {
-        out = dp.output[0]
-        outProp.onChange { if (it != null) dp.output[0] = it.toDouble() }
+        unipolar = dp.unipolarOut[0]
+        unipolarProp.onChange { if (it != null) dp.unipolarOut[0] = it.toDouble() }
     }
 
-    val netProp = SimpleObjectProperty<Double>()
-    var net by netProp
+    val bipolarProp = SimpleDoubleProperty()
+    var bipolar by bipolarProp
 
     init {
-        net = dp.desiredNet?.get(0)
-        outProp.onChange { if (it != null) dp.desiredNet = mat[it.toDouble()] else dp.desiredNet = null }
+        bipolar = dp.bipolarOut[0]
+        unipolarProp.onChange { if (it != null) dp.bipolarOut = mat[it.toDouble()] }
     }
 }
 
