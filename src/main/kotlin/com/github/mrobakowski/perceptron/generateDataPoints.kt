@@ -20,7 +20,7 @@ fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam
 
         val res = if (lParam1 * x + lParam2 * y + lParam3 > 0) 1.0 else 0.0
 
-        DataPoint(mat[x, y, res, x + y - 1])
+        DataPoint(mat[x, y, res, lParam1 * x + lParam2 * y + lParam3])
     }
 
     draw(res, perceptron, displayPerceptron)
