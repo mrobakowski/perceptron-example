@@ -17,8 +17,11 @@ class Neuron(
         activationFunctionBipolar(x)
 
     fun net(x: Matrix<Double>) = weights * x.extendWithColumns(mat[1]).T
-    fun perceptronLearn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5) {
+    fun perceptronLearn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5): Pair<Double, Int> {
+        var lastError = 0.0
+        var numIter = 0
         for (epoch in 1..maxEpochs) {
+            numIter += 1
             val shuffled = examples.shuffle()
             var totalError = 0.0
 
@@ -29,14 +32,20 @@ class Neuron(
                 weights += trainRate * error * inputs.extendWithColumns(mat[1])
             }
 
-            println("Epoch #$epoch err=$totalError")
+//            println("Epoch #$epoch err=$totalError")
+
+            lastError = totalError
 
             if (totalError == 0.0) break
         }
+        return lastError to numIter
     }
 
-    fun adalineLearn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5, eps: Double = 0.001) {
+    fun adalineLearn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5, eps: Double = 0.001): Pair<Double, Int> {
+        var lastError = 0.0
+        var numIter = 0
         for (epoch in 1..maxEpochs) {
+            numIter += 1
             val shuffled = examples.shuffle()
             var totalError = 0.0
 
@@ -49,10 +58,12 @@ class Neuron(
 
             totalError /= shuffled.size
 
-            println("Epoch #$epoch err=$totalError (adaline)")
+//            println("Epoch #$epoch err=$totalError (adaline)")
 
+            lastError = totalError
             if (totalError in -eps..eps) break
         }
+        return lastError to numIter
     }
 }
 

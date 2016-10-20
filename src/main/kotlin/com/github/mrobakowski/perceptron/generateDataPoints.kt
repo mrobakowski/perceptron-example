@@ -6,8 +6,10 @@ import golem.plot
 import golem.title
 import java.util.*
 
-fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam3: Double, neuron: Neuron,
-                       displayPerceptron: Boolean): List<DataPoint> {
+// FIXME: functions in this file do too much
+
+fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam3: Double, neuron: Neuron? = null,
+                       displayPerceptron: Boolean, blind: Boolean = false): List<DataPoint> {
     val rand = Random()
     val xs = DoubleArray(num)
     val ys = DoubleArray(num)
@@ -23,7 +25,8 @@ fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam
         DataPoint(mat[x, y, res, res * 2 - 1])
     }
 
-    draw(res, neuron, displayPerceptron)
+    if (!blind && neuron != null)
+        draw(res, neuron, displayPerceptron)
 
     return res
 }
