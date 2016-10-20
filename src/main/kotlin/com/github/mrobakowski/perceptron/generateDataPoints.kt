@@ -6,7 +6,7 @@ import golem.plot
 import golem.title
 import java.util.*
 
-fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam3: Double, perceptron: Perceptron,
+fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam3: Double, neuron: Neuron,
                        displayPerceptron: Boolean): List<DataPoint> {
     val rand = Random()
     val xs = DoubleArray(num)
@@ -23,18 +23,18 @@ fun generateDataPoints(num: Int = 1000, lParam1: Double, lParam2: Double, lParam
         DataPoint(mat[x, y, res, res * 2 - 1])
     }
 
-    draw(res, perceptron, displayPerceptron)
+    draw(res, neuron, displayPerceptron)
 
     return res
 }
 
-fun draw(dps: List<DataPoint>, perceptron: Perceptron, displayPerceptron: Boolean) {
+fun draw(dps: List<DataPoint>, neuron: Neuron, displayPerceptron: Boolean) {
     val pts = dps.groupBy { it.unipolarOut[0] }
 
     val (xsAbove, ysAbove) = pts[0.0]?.map { it.input[0] to it.input[1] }?.unzip() ?: listOf<Double>() to listOf()
     val (xsBelow, ysBelow) = pts[1.0]?.map { it.input[0] to it.input[1] }?.unzip() ?: listOf<Double>() to listOf()
 
-    val a = perceptron.weights
+    val a = neuron.weights
     val xStart = 0.0
     val yStart = line(a, xStart)
     val xEnd = 1.0

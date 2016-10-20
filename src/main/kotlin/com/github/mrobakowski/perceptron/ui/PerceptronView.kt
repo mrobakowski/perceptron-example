@@ -1,7 +1,7 @@
 package com.github.mrobakowski.perceptron.ui
 
 import com.github.mrobakowski.perceptron.DataPoint
-import com.github.mrobakowski.perceptron.Perceptron
+import com.github.mrobakowski.perceptron.Neuron
 import com.github.mrobakowski.perceptron.draw
 import com.github.mrobakowski.perceptron.generateDataPoints
 import golem.mat
@@ -21,7 +21,7 @@ class PerceptronView : View() {
         title = "Perceptron Example"
     }
 
-    val data = FXCollections.observableArrayList<ObservableDataPoint2D>()
+    val data = FXCollections.observableArrayList<ObservableDataPoint2D>()!!
 
     val numDataProp = SimpleIntegerProperty(100)
     var numData by numDataProp
@@ -35,7 +35,7 @@ class PerceptronView : View() {
     val lParam3Prop = SimpleDoubleProperty(0.0)
     var lParam3 by lParam3Prop
 
-    val perceptronProp = SimpleObjectProperty<Perceptron>(Perceptron(2))
+    val perceptronProp = SimpleObjectProperty<Neuron>(Neuron(2))
     var perceptron by perceptronProp
 
     val trainRateProp = SimpleDoubleProperty(0.1)
@@ -124,8 +124,8 @@ class PerceptronView : View() {
                 var l: Label? = null
 
                 fun rebindWeightsLabel() {
-                    l?.bind(perceptronProp, readonly = true, converter = object : StringConverter<Perceptron>() {
-                        override fun toString(p: Perceptron) = "${p.weights[0]}, ${p.weights[1]}, ${p.weights[2]}"
+                    l?.bind(perceptronProp, readonly = true, converter = object : StringConverter<Neuron>() {
+                        override fun toString(p: Neuron) = "${p.weights[0]}, ${p.weights[1]}, ${p.weights[2]}"
                         override fun fromString(string: String?) = throw UnsupportedOperationException("not implemented")
                     })
                 }
@@ -136,7 +136,7 @@ class PerceptronView : View() {
 
                     button("Randomize") {
                         setOnMouseClicked {
-                            perceptron = Perceptron(2)
+                            perceptron = Neuron(2)
                             draw(data.map { it.dp }, perceptron, disp)
                         }
                     }
@@ -145,7 +145,7 @@ class PerceptronView : View() {
                     button("Train") {
                         setOnMouseClicked {
                             val dps = data.map { it.dp }
-                            perceptron.learn(dps, trainRate, maxEpochs)
+                            perceptron.perceptronLearn(dps, trainRate, maxEpochs)
                             rebindWeightsLabel()
                             draw(dps, perceptron, disp)
                         }

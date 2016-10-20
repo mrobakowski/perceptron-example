@@ -3,7 +3,7 @@ package com.github.mrobakowski.perceptron
 import golem.*
 import golem.matrix.Matrix
 
-class Perceptron(
+class Neuron(
         numInputs: Int
 ) {
     fun activationFunctionUnipolar(it: Matrix<Double>) = it.mapMat { (it >= 0).toDouble() }
@@ -17,7 +17,7 @@ class Perceptron(
         activationFunctionBipolar(x)
 
     fun net(x: Matrix<Double>) = weights * x.extendWithColumns(mat[1]).T
-    fun learn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5) {
+    fun perceptronLearn(examples: List<DataPoint>, trainRate: Double = 0.1, maxEpochs: Int = 5) {
         for (epoch in 1..maxEpochs) {
             val shuffled = examples.shuffle()
             var totalError = 0.0
